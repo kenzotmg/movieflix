@@ -19,7 +19,7 @@ services:
       timeout: 5s
       retries: 10
   app:
-    build: .
+    build: ./app/.
     restart: unless-stopped
     depends_on:
       db-app:
