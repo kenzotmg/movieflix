@@ -57,7 +57,7 @@ jobs:
         run: docker build -t movieflix-etl:ci ./fluxo-de-dados/etl
 
       - name: Up only DW
-        run: docker compose up -d db-dw
+        run: docker compose -f docker-compose.etl.yml up -d db-dw
 
       - name: Run ETL (load DW + create views + dashboard)
         run: docker compose -f docker-compose.etl.yml run --rm etl
