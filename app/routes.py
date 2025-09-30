@@ -19,7 +19,7 @@ def new_movies():
 
 @bp.get("/health")
 def health_check():
-    return "OK", 200
+    return "OK", 200 
 
 # ------------------------
 # Listar filmes e avaliacoes
