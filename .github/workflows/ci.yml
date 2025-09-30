@@ -23,11 +23,11 @@ jobs:
           printf "%s" "${{ secrets.APP_DB_NAME }}"     > .secrets/app_db_name
 
       - name: Build app image
-        run: docker build -t movieflix-app:ci .
+        run: docker build -t movieflix-app:ci ./app
 
       - name: Up stack (app)
         run: |
-          docker compose -f docker-compose.yaml up -d db-app app nginx
+          docker compose -f docker-compose.app.yml up -d db-app app nginx
           for i in {1..40}; do
             code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health || true)
             [ "$code" = "200" ] && exit 0
@@ -38,7 +38,7 @@ jobs:
 
       - name: Down stack (app)
         if: always()
-        run: docker compose -f docker-compose.yaml down -v
+        run: docker compose -f docker-compose.app.yml down -v
 
   etl_job:
     runs-on: ubuntu-latest
