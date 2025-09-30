@@ -17,6 +17,10 @@ def index():
 def new_movies():
     return render_template("new.html")
 
+@bp.get("/health")
+def health_check():
+    return "OK", 200
+
 # ------------------------
 # Listar filmes e avaliacoes
 # ------------------------
