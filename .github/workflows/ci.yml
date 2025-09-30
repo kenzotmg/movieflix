@@ -60,7 +60,7 @@ jobs:
         run: docker compose up -d db-dw
 
       - name: Run ETL (load DW + create views + dashboard)
-        run: docker compose run --rm etl
+        run: docker compose -f docker-compose.etl.yml run --rm etl
 
       - name: Smoke SQL on views
         run: |
