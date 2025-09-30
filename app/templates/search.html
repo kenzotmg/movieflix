@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscar Filme</title>
+</head>
+<body>
+    <h1>Buscar Filme</h1>
+
+    <form method="get" action="/movies/search">
+        <label for="q">Nome do Filme:</label>
+        <input type="text" id="q" name="q" value="{{ query or '' }}">
+        <button type="submit">Buscar</button>
+    </form>
+
+    {% if movies is defined %}
+        <h2>Resultados</h2>
+        {% if movies %}
+            <ul>
+            {% for m in movies %}
+                <li>
+                    {{ m.title }} ({{ m.year }})
+                    <a href="/movies/{{ m.id }}/rate">Avaliar</a>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>Nenhum filme encontrado.</p>
+        {% endif %}
+    {% endif %}
+
+    <p><a href="/">Voltar ao início</a></p>
+</body>
+</html>

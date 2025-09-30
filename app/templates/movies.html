@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Filmes & Avaliações</title>
+</head>
+<body>
+    <h1>Filmes & Avaliações</h1>
+
+    {% if movies %}
+        <table border="1" cellpadding="6" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Título</th>
+                    <th>Ano</th>
+                    <th>Quantidade de Avaliações</th>
+                    <th>Média</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in movies %}
+                <tr>
+                    <td>{{ m.id }}</td>
+                    <td>{{ m.title }}</td>
+                    <td>{{ m.year or "-" }}</td>
+                    <td>{{ m.num_ratings }}</td>
+                    <td>
+                        {% if m.avg_rating is not none %}
+                            {{ '%.2f'|format(m.avg_rating) }}
+                        {% else %}
+                            Sem avaliações
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nenhum filme cadastrado.</p>
+    {% endif %}
+
+    <p>
+        <a href="/">Voltar ao início</a> |
+        <a href="/movies/new">Cadastrar Filme</a> |
+        <a href="/movies/search">Buscar/Avaliar</a>
+    </p>
+</body>
+</html>
