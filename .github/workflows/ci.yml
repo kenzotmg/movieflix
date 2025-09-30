@@ -54,17 +54,17 @@ jobs:
           printf "%s" "${{ secrets.DW_DB_NAME }}"     > .secrets/dw_db_name
 
       - name: Build ETL image
-        run: docker build -t movieflix-etl:ci ./etl
+        run: docker build -t movieflix-etl:ci ./fluxo-de-dados/etl
 
       - name: Up only DW
-        run: docker compose up -d db_dw
+        run: docker compose up -d db-dw
 
       - name: Run ETL (load DW + create views + dashboard)
         run: docker compose run --rm etl
 
       - name: Smoke SQL on views
         run: |
-          docker compose exec -T db_dw sh -lc \
+          docker compose exec -T db-dw sh -lc \
             'export PGPASSWORD="$(cat '${{ secrets.DW_DB_PASSWORD }}')" &&\
              psql -U $(cat /run/secrets/dw_db_user) -d $(cat /run/secrets/dw_db_name) -c "select count(*) from dm.v_top15_votes;"'
 
