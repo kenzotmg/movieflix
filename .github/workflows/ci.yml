@@ -23,11 +23,11 @@ jobs:
           printf "%s" "${{ secrets.APP_DB_NAME }}"     > .secrets/app_db_name
 
       - name: Build app image
-        run: docker build -t movieflix-app:ci ./app
+        run: docker build -t movieflix-app:ci .
 
       - name: Up stack (app)
         run: |
-          docker compose -f docker-compose.yml up -d db-app app nginx
+          docker compose -f docker-compose.yaml up -d db-app app nginx
           for i in {1..40}; do
             code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health || true)
             [ "$code" = "200" ] && exit 0
@@ -38,7 +38,7 @@ jobs:
 
       - name: Down stack (app)
         if: always()
-        run: docker compose -f docker-compose.yml down -v
+        run: docker compose -f docker-compose.yaml down -v
 
   etl_job:
     runs-on: ubuntu-latest
@@ -54,17 +54,17 @@ jobs:
           printf "%s" "${{ secrets.DW_DB_NAME }}"     > .secrets/dw_db_name
 
       - name: Build ETL image
-        run: docker build -t movieflix-etl:ci ./etl
+        run: docker build -t movieflix-etl:ci ./fluxo-de-dados/etl
 
       - name: Up only DW
-        run: docker compose up -d db_dw
+        run: docker compose up -d db-dw
 
       - name: Run ETL (load DW + create views + dashboard)
         run: docker compose run --rm etl
 
       - name: Smoke SQL on views
         run: |
-          docker compose exec -T db_dw sh -lc \
+          docker compose exec -T db-dw sh -lc \
             'export PGPASSWORD="$(cat '${{ secrets.DW_DB_PASSWORD }}')" &&\
              psql -U $(cat /run/secrets/dw_db_user) -d $(cat /run/secrets/dw_db_name) -c "select count(*) from dm.v_top15_votes;"'
 
@@ -75,7 +75,7 @@ jobs:
   push_images:
     runs-on: ubuntu-latest
     needs: [test_app, etl_job]
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
       - uses: docker/login-action@v3
