@@ -27,7 +27,7 @@ jobs:
 
       - name: Up stack (app)
         run: |
-          docker compose -f docker-compose.yml up -d db-app app nginx
+          docker compose -f docker-compose.yaml up -d db-app app nginx
           for i in {1..40}; do
             code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health || true)
             [ "$code" = "200" ] && exit 0
@@ -38,7 +38,7 @@ jobs:
 
       - name: Down stack (app)
         if: always()
-        run: docker compose -f docker-compose.yml down -v
+        run: docker compose -f docker-compose.yaml down -v
 
   etl_job:
     runs-on: ubuntu-latest
