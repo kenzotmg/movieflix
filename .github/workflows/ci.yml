@@ -66,11 +66,11 @@ jobs:
         run: |
           docker compose exec -T db-dw sh -lc \
             'export PGPASSWORD="$(cat '${{ secrets.DW_DB_PASSWORD }}')" &&\
-             psql -U $(cat /run/secrets/dw_db_user) -d $(cat /run/secrets/dw_db_name) -c "select count(*) from dm.v_top15_votes;"'
+             psql -U $({{ secrets.DW_DB_USER }}) -d $({{ secrets.DW_DB_NAME }}) -c "select count(*) from dm.v_top15_votes;"'
 
       - name: Down DW
         if: always()
-        run: docker compose down -v
+        run: docker compose -f docker-compose.etl.yml down -v
 
   push_images:
     runs-on: ubuntu-latest
